@@ -12,7 +12,6 @@ dbCollection = "chats"
 try:
     cliente=pymongo.MongoClient(MONGO_URL, serverSelectionTimeoutMS=MONGO_TIMEOUT)
     cliente.server_info()
-    print("connection with MongoDB succesfull")
 
     database = cliente[databaseName]
     collection = database[dbCollection]
