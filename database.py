@@ -19,3 +19,8 @@ def save_message(sender, message, number):
             "datetime": str(datetime.now())
         }
     )
+
+def get_last_messages(limit = 3):
+    return list(reversed(list(chats.find().sort("numero", -1).limit(limit)))) 
+
+
