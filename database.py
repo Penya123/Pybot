@@ -1,30 +1,21 @@
-import pymongo
+from pymongo import MongoClient
+from datetime import datetime
 
 MONGO_HOST="localhost"
 MONGO_PORT="27017"
-MONGO_TIMEOUT=1000
 
 MONGO_URL="mongodb://" + MONGO_HOST + ":" + MONGO_PORT + "/"
 
-databaseName = "pychat"
-dbCollection = "chats"
+client = MongoClient(MONGO_URL)
+db = client["pychat"]
+chats = db["chats"]
 
-try:
-    cliente=pymongo.MongoClient(MONGO_URL, serverSelectionTimeoutMS=MONGO_TIMEOUT)
-    cliente.server_info()
-
-    database = cliente[databaseName]
-    collection = database[dbCollection]
-
-except pymongo.errors.ServerSelectionTimeoutError as Timefail:
-    print("Time out: " + Timefail)
-except pymongo.errors.ConnectionFailure as errorConnection:
-    print("fail to connecto to MongoDB: " + errorConnection)
-
-def showCollections():
-        print("Collections:")
-        for documents in collection.find():
-            print("Number: " + str(documents["numero"]) +
-                "\nSender: " + documents["remitente"] +
-                "\nMesaje: " + documents["mensaje"] + 
-                "\nTime: " + documents["datetime"])
+def save_message(sender, message, number):
+    chats.insert_one(
+        {
+            "remitente": sender,
+            "numero": number,
+            "mensaje": message,
+            "datetime": str(datetime.now())
+        }
+    )
